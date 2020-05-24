@@ -1,0 +1,473 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Relative_Orientation</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-19"><meta name="DC.source" content="Relative_Orientation.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">MWONGELA D MATHINA: F19/1707/2013</a></li><li><a href="#3">WANJALA  N KOTOCHAI: F19/1717/2013</a></li></ul></div><pre class="codeinput">clear;
+<span class="comment">%%%% %%%%%%%%%%%%% Authors-cum-Engineers %%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><h2>MWONGELA D MATHINA: F19/1707/2013<a name="2"></a></h2><h2>WANJALA  N KOTOCHAI: F19/1717/2013<a name="3"></a></h2><pre class="codeinput"><span class="comment">%%%%%%%%%%%%%%%%% we get going %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><pre class="codeinput"><span class="comment">%%%%%%%%%%% photo coordinates of photo 1 %%%%%%%%%%</span>
+photo1=[0.966 -88.738
+        -0.798 1.403
+        -2.511 92.055
+        92.337 -88.145
+        96.602 3.491
+        85.136 90.647];
+<span class="comment">%%%%%%%%%%% photo coordinates of photo 2 %%%%%%%%%</span>
+photo2=[-91.627 -86.419
+        -89.994 4.162
+        -88.824 95.641
+        -1.022 -89.392
+        0.818 2.564
+        2.595 90.518];
+</pre><pre class="codeinput"> <span class="comment">%%%%%%%% model coordinates of the 6 conugate image points %%%%%%%%%%%%</span>
+model=[0 0 -152
+       200 0 -152
+       0 187.5 -152
+       200 187.5 -152
+       0 -187.5 -152
+       200 -187.5 -152];
+X=model (:,1);
+Y=model(:,2);
+ZA=model(:,3);
+Z=(200/92)*ZA;
+</pre><pre class="codeinput">    f=152; <span class="comment">%%%%% focal length %%%%</span>
+ <span class="comment">%%%%extracting photo coordinates %%%%</span>
+xa1=photo1(:,1);
+ya1=photo1(:,2);
+xa2=photo2(:,1);
+ya2=photo2(:,2);
+</pre><pre class="codeinput"><span class="comment">%%%% initial values %%%%%</span>
+om=0;phi=0;K=0;
+ BY=0;BZ=0;BX=200;
+</pre><pre class="codeinput"> <span class="comment">%%%%%%%%%% column matrices to aid in formation of the A matrix %%%%%%</span>
+ M=[1;1;1;1;2;2;2;2;3;3;3;3;4;4;4;4;5;5;5;5;6;6;6;6];<span class="comment">%%%%%% column matrix helps pick the data %%%%%</span>
+ T=[1;1;1;1;3;3;3;3;5;5;5;5;7;7;7;7;9;9;9;9;11;11;11;11];<span class="comment">%%%%%% column matrix places the values at their respective positions %%%%%</span>
+</pre><pre class="codeinput"> <span class="comment">%%%%%%%%%%%% Functions of the three rotations omega,phi and kappa %%%%%</span>
+ r11=cos(phi)*cos(K);
+ r12=((cos(om)*sin(K))+(sin(om)*sin(phi)*cos(K)));
+ r13=(sin(om)*sin(K))-(cos(om)*sin(phi)*cos(K));
+ r21=-cos(phi)*sin(K);
+ r22=(cos(om)*cos(K))-(sin(om)*sin(phi)*sin(K));
+ r23=(sin(om)*cos(K))+(cos(om)*sin(phi)*sin(K));
+ r31=sin(phi);
+ r32=-sin(om)*cos(phi);
+ r33=cos(om)*cos(phi);
+</pre><pre class="codeinput"><span class="keyword">for</span> i=1:100
+</pre><pre class="codeinput"> <span class="comment">%%%%%% for loop to form the A matrix %%%%%%</span>
+ <span class="keyword">for</span> i=1:24;
+     m=M(i);
+     k=T(i);
+     i=2*k-1;
+     j=3*m;
+
+  <span class="comment">%%%%%%%%%%%%%%%%% differential matrix w.r.t omega  %%%%%%%%</span>
+
+     A(i,1)=0;
+     A(i+1,1)=0;
+     dom1=((-ya2(m)*sin(om)*sin(K)+ya2(m)*cos(om)*sin(phi)*cos(K)-f*cos(om)*sin(K)-f*sin(om)*sin(phi)*cos(K))*(Z(m)-BZ));
+     dom2=((-ya2(m)*cos(om)*cos(phi)+f*sin(om)*cos(phi))*(X(m)-200));
+     A(i+2,1)=dom1-dom2;
+     dom3=((-ya2(m)*sin(om)*cos(K)-ya2(m)*cos(om)*sin(phi)*sin(K))-(f*cos(om)*cos(K)-f*sin(om)*sin(phi)*sin(K)))*(Z(m)-BZ);
+     dom4=(-ya2(m)*cos(om)*cos(phi)+f*sin(om)*cos(phi))*(Y(m)-BY);
+     A(i+3,1)=dom3-dom4;
+
+
+   <span class="comment">%%%%%%%%%%%%%%%%% differential matrix w.r.t phi  %%%%%%%%</span>
+
+     A(i,2)=0;
+     A(i+1,2)=0;
+     dphi1=(-xa2(m)*sin(phi)*cos(K)+ya2(m)*sin(om)*cos(phi)*cos(K)+f*cos(om)*cos(phi)*cos(K))*(Z(m)-BZ);
+     dphi2=(xa2(m)*cos(phi)+ya2(m)*sin(om)*sin(phi)+f*cos(om)*sin(phi))*(X(m)-200);
+     A(i+2,2)=dphi1-dphi2;
+     dphi3=(xa2(m)*sin(phi)*sin(K)-ya2(m)*sin(om)*cos(phi)*sin(K)-f*cos(om)*cos(phi)*sin(K))*(Z(m)-BZ);
+     dphi4=(xa2(m)*cos(phi)-ya2(m)*sin(om)*sin(phi)+f*cos(om)*sin(phi))*(Y(m)-BY);
+     A(i+3,2)=dphi3-dphi4;
+
+
+    <span class="comment">%%%%%%%%%%%%%%%%%% differential matrix w.r.t kappa  %%%%%%%%</span>
+
+     A(i,3)=0;
+     A(i+1,3)=0;
+     A(i+2,3)=(-xa2(m)*cos(phi)*sin(K)+ya2(m)*cos(om)*cos(K)-ya2(m)*sin(om)*sin(phi)*sin(K)-f*sin(om)*cos(K)-f*cos(om)*sin(phi)*sin(K))*(Z(m)-BZ);
+     A(i+3,3)=(-xa2(m)*cos(phi)*cos(K)-ya2(m)*cos(om)*sin(K)-ya2(m)*sin(om)*sin(phi)*cos(K)+f*sin(om)*sin(K)-f*cos(om)*sin(phi)*cos(K))*(Z(m)-BZ);
+
+    <span class="comment">%%%%%%%%%%%%%%%%% differential matrix w.r.t base component BY  %%%%%%%%</span>
+
+     A(i,4)=0;
+     A(i+1,4)=0;
+     A(i+2,4)=0;
+     A(i+3,4)=r31*xa2(m)+r32*ya2(m)-r33*f;
+
+
+   <span class="comment">%%%%%%%%%%%%%%%%% differential matrix w.r.t base component BZ  %%%%%%%%</span>
+
+     A(i,5)=0;
+     A(i+1,5)=0;
+     A(i+2,5)=-(r11*xa2(m)+r12*ya2(m)-r13*f);
+     A(i+3,5)=-(r21*xa2(m)+r22*ya2(m)-r23*f);
+
+    <span class="comment">%%%%%%%%%%%%%%%%% differential matrices w.r.t model coordinates X,Y,Z %%%%%%%%</span>
+
+    <span class="comment">%%%%%%%%% matrix as a result of X %%%%%%%</span>
+     A(i,3+j)=f;
+     A(i+1,3+j)=0;
+     A(i+2,3+j)=-(r31*xa2(m)+r32*ya2(m)-r33*f);
+     A(i+3,3+j)=0;
+
+    <span class="comment">%%%%%%%%% matrix as a result of Y %%%%%%%</span>
+
+     A(i,4+j)=0;
+     A(i+1,4+j)=f;
+     A(i+2,4+j)=0;
+     A(i+3,4+j)= -(r31*xa2(m)+r32*ya2(m)-r33*f);
+
+     <span class="comment">%%%%%%%%% matrix as a result of Z %%%%%%%</span>
+
+     A(i,5+j)=xa1(m);
+     A(i+1,5+j)=ya1(m);
+     A(i+2,5+j)=r11*xa2(m)+r12*ya2(m)-r13*f;
+     A(i+3,5+j)=r21*xa2(m)+r22*ya2(m)-r23*f;
+  <span class="keyword">end</span>
+</pre><pre class="codeinput">  <span class="comment">%%%%%%Formation of the matrix of constants;the L matrix %%%%%%%</span>
+
+ <span class="keyword">for</span> i=1:24;
+     c=M(i);
+     g=T(i);
+     i=2*g-1;
+     L(i,1)=xa1(c)*Z(c)+f*X(c);
+     L(i+1,1)=ya1(c)*Z(c)+f*Y(c);
+     L(i+2,1)=((r11*xa2(c)+r12*ya2(c)-r13*f)*(Z(c)-BZ))-((r31*xa2(c)+r32*ya2(c)-r33*f)*(X(c)-200));
+     L(i+3,1)=((r21*xa2(c)+r22*ya2(c)-r23*f)*(Z(c)-BZ))-((r31*xa2(c)+r32*ya2(c)-r33*f)*(Y(c)-BY));
+ <span class="keyword">end</span>
+</pre><pre class="codeinput"> N=A'*A; <span class="comment">%%%%%Normal equation matrix %%%%%%%</span>
+Qxx=inv(N);<span class="comment">%%%%%%%% coffactor matrix %%%%%%</span>
+d=A'*-L;   <span class="comment">%%%%% absolute vector %%%%%%%%</span>
+delta=Qxx*d; <span class="comment">%%%%% corrections %%%%%%%%</span>
+</pre><pre class="codeinput"><span class="comment">%%%%updating the initial values %%%%%%</span>
+
+om=om+delta(1,1);
+phi=phi+delta(2,1);
+K=K+delta(3,1);
+BY=BY+delta(4,1);
+BZ=BZ+delta(5,1);
+X(1,1)=X(1,1)+delta(6,1);
+Y(1,1)=Y(1,1)+delta(7,1);
+Z(1,1)=Z(1,1)+delta(8,1);
+X(2,1)=X(2,1)+delta(9,1);
+Y(2,1)=Y(2,1)+delta(10,1);
+Z(2,1)=Z(2,1)+delta(11,1);
+X(3,1)=X(3,1)+delta(12,1);
+Y(3,1)=Y(3,1)+delta(13,1);
+Z(3,1)=Z(3,1)+delta(14,1);
+X(4,1)=X(4,1)+delta(15,1);
+Y(4,1)=Y(4,1)+delta(16,1);
+Z(4,1)=Z(4,1)+delta(17,1);
+X(5,1)=X(5,1)+delta(18,1);
+Y(5,1)=Y(5,1)+delta(19,1);
+Z(5,1)=Z(5,1)+delta(20,1);
+X(6,1)=X(6,1)+delta(21,1);
+Y(6,1)=Y(6,1)+delta(22,1);
+Z(6,1)=Z(6,1)+delta(23,1);
+</pre><pre class="codeinput"><span class="keyword">end</span>
+<span class="comment">%%%%%%%%%% relative orientation parameters and the model coordinates %%%</span>
+ROP=[om;phi;K;BY;BZ;X(1,1);Y(1,1);Z(1,1);X(2,1);Y(2,1);Z(2,1);X(3,1);Y(3,1);Z(3,1);X(4,1);Y(4,1);Z(4,1);X(5,1);Y(5,1);Z(5,1);X(6,1);Y(6,1);Z(6,1)];
+
+<span class="comment">%%%%%%% Accuracy assessment %%%%%%%</span>
+<span class="comment">%%%% v=L-Ax %%%</span>
+</pre><pre class="codeinput">Ax=A*delta;
+v=L-Ax; <span class="comment">%%%% Residual vector %%%%</span>
+sigma=sqrt((v'*v)/(24-23));<span class="comment">%%%%% aposteriori variance %%%%%%%%%</span>
+Exx=sigma*Qxx; <span class="comment">%%%%%%% covariance matrix %%%%%%</span>
+ E1 = diag(Exx);<span class="comment">%%%%% extracting the diagonal matrix to compute std deviations %%%%%%%</span>
+ Sd=sqrt(E1)<span class="comment">%%%%%%%%% Standard deviations %%%%%%</span>
+</pre><pre class="codeoutput">
+Sd =
+
+    0.0068
+    0.0061
+    0.0035
+    1.6777
+    2.0471
+    0.5548
+    2.0043
+    2.9795
+    0.5657
+    0.5378
+    3.8726
+    0.5837
+    3.3629
+    5.4861
+    2.0135
+    1.9081
+    3.4413
+    2.0344
+    0.5217
+    3.3243
+    2.6627
+    2.7261
+    4.8640
+
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear;
+%%%% %%%%%%%%%%%%% Authors-cum-Engineers %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%% MWONGELA D MATHINA: F19/1707/2013
+%%% WANJALA  N KOTOCHAI: F19/1717/2013
+%%
+%%%%%%%%%%%%%%%%% we get going %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%%%%%%%%%%% photo coordinates of photo 1 %%%%%%%%%%
+photo1=[0.966 -88.738
+        -0.798 1.403
+        -2.511 92.055
+        92.337 -88.145
+        96.602 3.491
+        85.136 90.647];
+%%%%%%%%%%% photo coordinates of photo 2 %%%%%%%%%    
+photo2=[-91.627 -86.419
+        -89.994 4.162
+        -88.824 95.641
+        -1.022 -89.392
+        0.818 2.564
+        2.595 90.518];
+ %%
+ %%%%%%%% model coordinates of the 6 conugate image points %%%%%%%%%%%%
+model=[0 0 -152
+       200 0 -152
+       0 187.5 -152
+       200 187.5 -152
+       0 -187.5 -152
+       200 -187.5 -152];
+X=model (:,1);
+Y=model(:,2);
+ZA=model(:,3);
+Z=(200/92)*ZA;
+%%
+    f=152; %%%%% focal length %%%%
+ %%%%extracting photo coordinates %%%%
+xa1=photo1(:,1);
+ya1=photo1(:,2);
+xa2=photo2(:,1);
+ya2=photo2(:,2);
+%%
+%%%% initial values %%%%%
+om=0;phi=0;K=0;
+ BY=0;BZ=0;BX=200;
+ %%
+ %%%%%%%%%% column matrices to aid in formation of the A matrix %%%%%%
+ M=[1;1;1;1;2;2;2;2;3;3;3;3;4;4;4;4;5;5;5;5;6;6;6;6];%%%%%% column matrix helps pick the data %%%%%
+ T=[1;1;1;1;3;3;3;3;5;5;5;5;7;7;7;7;9;9;9;9;11;11;11;11];%%%%%% column matrix places the values at their respective positions %%%%%
+ %%
+ %%%%%%%%%%%% Functions of the three rotations omega,phi and kappa %%%%%
+ r11=cos(phi)*cos(K);
+ r12=((cos(om)*sin(K))+(sin(om)*sin(phi)*cos(K)));
+ r13=(sin(om)*sin(K))-(cos(om)*sin(phi)*cos(K));
+ r21=-cos(phi)*sin(K);
+ r22=(cos(om)*cos(K))-(sin(om)*sin(phi)*sin(K));
+ r23=(sin(om)*cos(K))+(cos(om)*sin(phi)*sin(K));
+ r31=sin(phi);
+ r32=-sin(om)*cos(phi);
+ r33=cos(om)*cos(phi);
+%%
+for i=1:100
+ %%%%%% for loop to form the A matrix %%%%%%
+ for i=1:24;   
+     m=M(i);
+     k=T(i);
+     i=2*k-1;
+     j=3*m;
+     
+  %%%%%%%%%%%%%%%%% differential matrix w.r.t omega  %%%%%%%%
+  
+     A(i,1)=0;
+     A(i+1,1)=0;
+     dom1=((-ya2(m)*sin(om)*sin(K)+ya2(m)*cos(om)*sin(phi)*cos(K)-f*cos(om)*sin(K)-f*sin(om)*sin(phi)*cos(K))*(Z(m)-BZ));
+     dom2=((-ya2(m)*cos(om)*cos(phi)+f*sin(om)*cos(phi))*(X(m)-200));
+     A(i+2,1)=dom1-dom2;
+     dom3=((-ya2(m)*sin(om)*cos(K)-ya2(m)*cos(om)*sin(phi)*sin(K))-(f*cos(om)*cos(K)-f*sin(om)*sin(phi)*sin(K)))*(Z(m)-BZ);
+     dom4=(-ya2(m)*cos(om)*cos(phi)+f*sin(om)*cos(phi))*(Y(m)-BY);
+     A(i+3,1)=dom3-dom4;
+ 
+ 
+   %%%%%%%%%%%%%%%%% differential matrix w.r.t phi  %%%%%%%%
+
+     A(i,2)=0;
+     A(i+1,2)=0;
+     dphi1=(-xa2(m)*sin(phi)*cos(K)+ya2(m)*sin(om)*cos(phi)*cos(K)+f*cos(om)*cos(phi)*cos(K))*(Z(m)-BZ);
+     dphi2=(xa2(m)*cos(phi)+ya2(m)*sin(om)*sin(phi)+f*cos(om)*sin(phi))*(X(m)-200);
+     A(i+2,2)=dphi1-dphi2;
+     dphi3=(xa2(m)*sin(phi)*sin(K)-ya2(m)*sin(om)*cos(phi)*sin(K)-f*cos(om)*cos(phi)*sin(K))*(Z(m)-BZ);
+     dphi4=(xa2(m)*cos(phi)-ya2(m)*sin(om)*sin(phi)+f*cos(om)*sin(phi))*(Y(m)-BY);
+     A(i+3,2)=dphi3-dphi4;
+ 
+ 
+    %%%%%%%%%%%%%%%%%% differential matrix w.r.t kappa  %%%%%%%%
+
+     A(i,3)=0;
+     A(i+1,3)=0;
+     A(i+2,3)=(-xa2(m)*cos(phi)*sin(K)+ya2(m)*cos(om)*cos(K)-ya2(m)*sin(om)*sin(phi)*sin(K)-f*sin(om)*cos(K)-f*cos(om)*sin(phi)*sin(K))*(Z(m)-BZ);
+     A(i+3,3)=(-xa2(m)*cos(phi)*cos(K)-ya2(m)*cos(om)*sin(K)-ya2(m)*sin(om)*sin(phi)*cos(K)+f*sin(om)*sin(K)-f*cos(om)*sin(phi)*cos(K))*(Z(m)-BZ);
+ 
+    %%%%%%%%%%%%%%%%% differential matrix w.r.t base component BY  %%%%%%%%
+
+     A(i,4)=0;
+     A(i+1,4)=0;
+     A(i+2,4)=0;
+     A(i+3,4)=r31*xa2(m)+r32*ya2(m)-r33*f;
+ 
+ 
+   %%%%%%%%%%%%%%%%% differential matrix w.r.t base component BZ  %%%%%%%%
+
+     A(i,5)=0;
+     A(i+1,5)=0;
+     A(i+2,5)=-(r11*xa2(m)+r12*ya2(m)-r13*f);
+     A(i+3,5)=-(r21*xa2(m)+r22*ya2(m)-r23*f);
+ 
+    %%%%%%%%%%%%%%%%% differential matrices w.r.t model coordinates X,Y,Z %%%%%%%%
+    
+    %%%%%%%%% matrix as a result of X %%%%%%%
+     A(i,3+j)=f;
+     A(i+1,3+j)=0;
+     A(i+2,3+j)=-(r31*xa2(m)+r32*ya2(m)-r33*f);
+     A(i+3,3+j)=0;
+     
+    %%%%%%%%% matrix as a result of Y %%%%%%%
+    
+     A(i,4+j)=0;
+     A(i+1,4+j)=f;
+     A(i+2,4+j)=0;
+     A(i+3,4+j)= -(r31*xa2(m)+r32*ya2(m)-r33*f);
+     
+     %%%%%%%%% matrix as a result of Z %%%%%%%
+     
+     A(i,5+j)=xa1(m);
+     A(i+1,5+j)=ya1(m);
+     A(i+2,5+j)=r11*xa2(m)+r12*ya2(m)-r13*f;
+     A(i+3,5+j)=r21*xa2(m)+r22*ya2(m)-r23*f;
+  end 
+ %%
+  %%%%%%Formation of the matrix of constants;the L matrix %%%%%%%
+  
+ for i=1:24;
+     c=M(i);
+     g=T(i);
+     i=2*g-1;
+     L(i,1)=xa1(c)*Z(c)+f*X(c);
+     L(i+1,1)=ya1(c)*Z(c)+f*Y(c);
+     L(i+2,1)=((r11*xa2(c)+r12*ya2(c)-r13*f)*(Z(c)-BZ))-((r31*xa2(c)+r32*ya2(c)-r33*f)*(X(c)-200));
+     L(i+3,1)=((r21*xa2(c)+r22*ya2(c)-r23*f)*(Z(c)-BZ))-((r31*xa2(c)+r32*ya2(c)-r33*f)*(Y(c)-BY));
+ end
+ %%
+ N=A'*A; %%%%%Normal equation matrix %%%%%%%
+Qxx=inv(N);%%%%%%%% coffactor matrix %%%%%%
+d=A'*-L;   %%%%% absolute vector %%%%%%%%
+delta=Qxx*d; %%%%% corrections %%%%%%%%
+%%
+%%%%updating the initial values %%%%%%
+
+om=om+delta(1,1);
+phi=phi+delta(2,1);
+K=K+delta(3,1);
+BY=BY+delta(4,1);
+BZ=BZ+delta(5,1);
+X(1,1)=X(1,1)+delta(6,1);
+Y(1,1)=Y(1,1)+delta(7,1);
+Z(1,1)=Z(1,1)+delta(8,1);
+X(2,1)=X(2,1)+delta(9,1);
+Y(2,1)=Y(2,1)+delta(10,1);
+Z(2,1)=Z(2,1)+delta(11,1);
+X(3,1)=X(3,1)+delta(12,1);
+Y(3,1)=Y(3,1)+delta(13,1);
+Z(3,1)=Z(3,1)+delta(14,1);
+X(4,1)=X(4,1)+delta(15,1);
+Y(4,1)=Y(4,1)+delta(16,1);
+Z(4,1)=Z(4,1)+delta(17,1);
+X(5,1)=X(5,1)+delta(18,1);
+Y(5,1)=Y(5,1)+delta(19,1);
+Z(5,1)=Z(5,1)+delta(20,1);
+X(6,1)=X(6,1)+delta(21,1);
+Y(6,1)=Y(6,1)+delta(22,1);
+Z(6,1)=Z(6,1)+delta(23,1);
+end
+%%%%%%%%%% relative orientation parameters and the model coordinates %%%
+ROP=[om;phi;K;BY;BZ;X(1,1);Y(1,1);Z(1,1);X(2,1);Y(2,1);Z(2,1);X(3,1);Y(3,1);Z(3,1);X(4,1);Y(4,1);Z(4,1);X(5,1);Y(5,1);Z(5,1);X(6,1);Y(6,1);Z(6,1)];
+
+%%%%%%% Accuracy assessment %%%%%%%
+%%%% v=L-Ax %%%
+%%
+Ax=A*delta;
+v=L-Ax; %%%% Residual vector %%%%
+sigma=sqrt((v'*v)/(24-23));%%%%% aposteriori variance %%%%%%%%%
+Exx=sigma*Qxx; %%%%%%% covariance matrix %%%%%%
+ E1 = diag(Exx);%%%%% extracting the diagonal matrix to compute std deviations %%%%%%%
+ Sd=sqrt(E1)%%%%%%%%% Standard deviations %%%%%%
+%%
+
+##### SOURCE END #####
+--></body></html>

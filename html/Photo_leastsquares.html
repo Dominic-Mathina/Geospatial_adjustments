@@ -1,0 +1,410 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Photo_leastsquares</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-08-07"><meta name="DC.source" content="Photo_leastsquares.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%Obsv=xlsread('Data.xlsx');</span>
+<span class="comment">% rdQ=Obsv(:,2);</span>
+ <span class="comment">%rdF=Obsv(:,3);</span>
+ clear;
+ format <span class="string">long</span>
+ Photo=[-64.097	72.924
+        64.017	77.183
+        -23.087	-39.191
+        64.353	-37.129];
+  Control=[2294.96	4735.29
+	       2274.05	5263.62
+	       2736.69	4928.94
+	       2734.89	5269.75];
+
+   Z=[1236.46;1242.56;1313.25;1274.9];
+<span class="comment">%   Xo= 2567.856907155749;</span>
+<span class="comment">%   Yo= 5015.889111413525;</span>
+<span class="comment">%   Zo=1701.718123048403;</span>
+<span class="comment">%   om=-0.011546195418;</span>
+<span class="comment">%  phi=-0.057043359032;</span>
+<span class="comment">%   K=1.593433644139;</span>
+
+  havg=1239.51;
+  x=Photo(:,1);
+  y=Photo(:,2);
+
+  X=Control(:,1);
+  Y=Control(:,2);
+  TC= [1; 1; 2; 2; 3; 3; 4; 4];
+  xa=-64.097;ya=72.924;	XA=2294.96;	YA=4735.29;	Za=1236.46;
+xb=64.017;yb=77.183;	XB=2274.05;	YB=5263.62;
+f=0.11205;
+ W=atan((yb-ya)/(xb-xa));
+ U=atan((YB-YA)/(XB-XA));
+ T=sqrt(((yb-ya)^2)+((xb-xa)^2));
+ S=sqrt(((YB-YA)^2)+((XB-XA)^2));
+
+  K=W-U;
+  <span class="comment">%KI=Ka*180;</span>
+ <span class="comment">% K=KI/pi;</span>
+ Scale=(T/1000)/S;
+ Xo=XA-((((xa*cos(-K))+(ya*sin(-K)))/Scale)/1000);
+  Yo=YA-((((-xa*sin(-K))+(ya*cos(-K)))/Scale)/1000);
+  Zo=((f+havg*Scale)/Scale);
+<span class="comment">%  Ka=89.6387;</span>
+<span class="comment">%  K=degtorad(Kp);</span>
+  om=0;
+  phi=0;
+ r11=cos(phi)*cos(K);
+ r12=((cos(om)*sin(K))+(sin(om)*sin(phi)*cos(K)));
+ r13=(sin(om)*sin(K))-(cos(om)*sin(phi)*cos(K));
+ r21=-cos(phi)*sin(K);
+ r22=(cos(om)*cos(K))-(sin(om)*sin(phi)*sin(K));
+ r23=(sin(om)*cos(K))+(cos(om)*sin(phi)*sin(K));
+ r31=sin(phi);
+ r32=-sin(om)*cos(phi);
+ r33=cos(om)*cos(phi);
+
+
+<span class="comment">%   for i=1:6;</span>
+<span class="comment">%       g=TC(i);</span>
+<span class="comment">%       i=2*g-1;</span>
+<span class="comment">%       dX(i,1)=-x(g)*r31-f*r11;</span>
+<span class="comment">%       dX(i+1,1)=-y(g)*r31-f*r21;</span>
+<span class="comment">%</span>
+<span class="comment">%   end</span>
+
+
+  <span class="keyword">for</span> i=1:8;
+    g=TC(i);
+    i=2*g-1;
+   dX2(i,1)=-x(g)*r31-f*r11;
+   dX2(i+1,1)=-y(g)*r31-f*r21;
+  <span class="keyword">end</span>
+
+  <span class="keyword">for</span> i=1:8;
+    h=TC(i);
+    i=2*h-1;
+   dY(i,1)=-x(h)*r32-f*r12;
+   dY(i+1,1)=-y(h)*r32-f*r22;
+  <span class="keyword">end</span>
+
+
+   <span class="keyword">for</span> i=1:8;
+    k=TC(i);
+    i=2*k-1;
+   dZ(i,1)=-x(k)*r33-f*r13;
+   dZ(i+1,1)=-y(k)*r33-f*r23;
+   <span class="keyword">end</span>;
+
+   <span class="keyword">for</span> i=1:8;
+    m=TC(i);
+    i=2*m-1;
+<span class="comment">%   FX1=(x(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000);</span>
+  FX1=(x(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000);
+  FX2=f*(-(sin(om)*sin(K))+cos(om)*sin(phi)*cos(K)*(Y(m)-Yo)+((cos(om)*sin(K)+sin(om)*sin(phi)*cos(K))*(Z(m)-Zo)));
+  dom(i,1)=FX1+FX2;
+  FY1=(y(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000);
+<span class="comment">%   D(i,1)=(x(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000)+(f*(-(sin(om)*sin(K))+cos(om)*sin(phi)*cos(K)*(Y(m)-Yo)+((cos(om)*sin(K)+sin(om)*sin(phi)*cos(K))*(Z(m)-Zo))))</span>
+<span class="comment">%   D(i+1,1)=(x(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000)+(f*(-(sin(om)*sin(K))+cos(om)*sin(phi)*cos(K)*(Y(m)-Yo)+((cos(om)*sin(K)+sin(om)*sin(phi)*cos(K))*(Z(m)-Zo))))</span>
+  FY2=f*((-sin(om)*cos(K))-cos(om)*sin(phi)*sin(K))*(Y(m)-Yo)+(cos(om)*cos(K) -sin(om)*sin(phi)*sin(K)*(Z(m)-Zo));
+ dom(i+1,1)=FY1+FY2;
+
+   <span class="keyword">end</span>
+   <span class="keyword">for</span> i=1:8;
+    n=TC(i);
+    i=2*n-1;
+    FXP1=(x(n)*((cos(phi)*(X(n)-Xo))+sin(om)*sin(phi)*(Y(n)-Yo)-cos(om)*sin(phi)*(Z(n)-Zo)))/1000;
+    FXP2=f*(-sin(phi)*cos(K)*(X(n)-Xo)+sin(om)*cos(phi)*cos(K)*(Y(n)-Yo)-cos(om)*cos(phi)*cos(K)*(Z(n)-Zo));
+    dphi(i,1)=FXP1+FXP2;
+    FYP1=(y(n)*((cos(phi)*(X(n)-Xo))+sin(om)*sin(phi)*(Y(n)-Yo)-cos(om)*sin(phi)*(Z(n)-Zo)))/1000;
+    FYP2=f*((sin(phi)*sin(K)*(X(n)-Xo))-(sin(om)*cos(phi)*sin(K)*(Y(n)-Yo))+cos(om)*cos(phi)*sin(K)*(Z(n)-Zo));
+    dphi(i+1,1)=FYP1+FYP2;
+   <span class="keyword">end</span>
+   <span class="keyword">for</span> i=1:8;
+    p=TC(i);
+    i=2*p-1;
+   dkappa(i,1)=f*((-cos(phi)*sin(K)*(X(p)-Xo))+(cos(om)*cos(K)-sin(om)*sin(phi)*sin(K)*(Y(p)-Yo))+(sin(om)*cos(K)+cos(om)*sin(phi)*sin(K)*(Z(p)-Zo)));
+   dkappa(i+1,1)=-f*(((cos(phi)*cos(K))*(X(p)-Xo))+((cos(om)*sin(K)+sin(om)*sin(phi)*cos(K))*(Y(p)-Yo))+(sin(om)*sin(K)-cos(om)*sin(phi)*cos(K))*(Z(p)-Zo));
+  <span class="keyword">end</span>
+
+A=[dX2 dY dZ dom dphi dkappa];
+
+   <span class="keyword">for</span> i=1:8;
+    q=TC(i);
+    i=2*q-1;
+    Fo(i,1)=x(q)*((r31*(X(q)-Xo))+(r32*(Y(q)-Yo))+(r33*(Z(q)-Zo)))/1000+f*((r11*(X(q)-Xo))+(r12*(Y(q)-Yo))+(r13*(Z(q)-Zo)));
+    Fo(i+1,1)=y(q)*((r31*(X(q)-Xo))+(r32*(Y(q)-Yo))+(r33*(Z(q)-Zo)))/1000+f*((r21*(X(q)-Xo))+(r22*(Y(q)-Yo))+(r23*(Z(q)-Zo))) ;
+   <span class="keyword">end</span>
+
+
+<span class="comment">% Initial=[Xo;Yo;Zo;om;phi;Ka];</span>
+<span class="comment">% Auniq=A(1:6,1:6);</span>
+<span class="comment">% Luniq=Fo(1:6,1);</span>
+<span class="comment">%</span>
+<span class="comment">% N=Auniq'*Auniq;</span>
+N=A'*A;
+Qxx=inv(N);
+d=A'*-Fo;
+delta=Qxx*d;
+
+ Xo=Xo+delta(1,1);
+ Yo=Yo+delta(2,1);
+ Zo=Zo+delta(3,1);
+ om=om+delta(4,1);
+ phi=phi+delta(5,1);
+ K=K+delta(6,1);
+
+N=A'*A;<span class="comment">%Normal equation matrix</span>
+Qxx=inv(N);<span class="comment">%Coffactor matrix</span>
+d=A'*-Fo2;<span class="comment">%Absolute vactor</span>
+xx=Qxx*d;<span class="comment">%corrections to be effected</span>
+<span class="comment">%updating of initial values</span>
+Xo=Xo+xx(1,1);
+Yo=Yo+xx(2,1);
+Zo=Zo+xx(3,1);
+om=om+xx(4,1);
+phi=phi+xx(5,1);
+K=K+xx(6,1);
+<span class="comment">% Final solution by least squares</span>
+
+Lsoln=[Xo;Yo;Zo;om;phi;K]
+</pre><pre class="codeoutput error">Undefined function or variable 'Fo2'.
+
+Error in Photo_leastsquares (line 151)
+d=A'*-Fo2;%Absolute vactor
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%Obsv=xlsread('Data.xlsx');
+% rdQ=Obsv(:,2);
+ %rdF=Obsv(:,3);
+ clear;
+ format long
+ Photo=[-64.097	72.924
+        64.017	77.183
+        -23.087	-39.191
+        64.353	-37.129];
+  Control=[2294.96	4735.29	
+	       2274.05	5263.62	
+	       2736.69	4928.94	
+	       2734.89	5269.75];
+           
+   Z=[1236.46;1242.56;1313.25;1274.9];
+%   Xo= 2567.856907155749;
+%   Yo= 5015.889111413525;
+%   Zo=1701.718123048403;
+%   om=-0.011546195418;
+%  phi=-0.057043359032;
+%   K=1.593433644139;
+   
+  havg=1239.51;
+  x=Photo(:,1);
+  y=Photo(:,2);
+  
+  X=Control(:,1);
+  Y=Control(:,2);
+  TC= [1; 1; 2; 2; 3; 3; 4; 4]; 
+  xa=-64.097;ya=72.924;	XA=2294.96;	YA=4735.29;	Za=1236.46;
+xb=64.017;yb=77.183;	XB=2274.05;	YB=5263.62;	
+f=0.11205;
+ W=atan((yb-ya)/(xb-xa));
+ U=atan((YB-YA)/(XB-XA));
+ T=sqrt(((yb-ya)^2)+((xb-xa)^2));
+ S=sqrt(((YB-YA)^2)+((XB-XA)^2));
+  
+  K=W-U;
+  %KI=Ka*180;
+ % K=KI/pi;
+ Scale=(T/1000)/S;
+ Xo=XA-((((xa*cos(-K))+(ya*sin(-K)))/Scale)/1000);
+  Yo=YA-((((-xa*sin(-K))+(ya*cos(-K)))/Scale)/1000);
+  Zo=((f+havg*Scale)/Scale);
+%  Ka=89.6387;
+%  K=degtorad(Kp);
+  om=0;
+  phi=0;
+ r11=cos(phi)*cos(K);
+ r12=((cos(om)*sin(K))+(sin(om)*sin(phi)*cos(K)));
+ r13=(sin(om)*sin(K))-(cos(om)*sin(phi)*cos(K));
+ r21=-cos(phi)*sin(K);
+ r22=(cos(om)*cos(K))-(sin(om)*sin(phi)*sin(K));
+ r23=(sin(om)*cos(K))+(cos(om)*sin(phi)*sin(K));
+ r31=sin(phi);
+ r32=-sin(om)*cos(phi);
+ r33=cos(om)*cos(phi);
+ 
+ 
+%   for i=1:6;
+%       g=TC(i);
+%       i=2*g-1;
+%       dX(i,1)=-x(g)*r31-f*r11;
+%       dX(i+1,1)=-y(g)*r31-f*r21;
+%     
+%   end
+
+
+  for i=1:8;
+    g=TC(i);
+    i=2*g-1;
+   dX2(i,1)=-x(g)*r31-f*r11;
+   dX2(i+1,1)=-y(g)*r31-f*r21;
+  end
+
+  for i=1:8;
+    h=TC(i);
+    i=2*h-1;
+   dY(i,1)=-x(h)*r32-f*r12;
+   dY(i+1,1)=-y(h)*r32-f*r22;
+  end
+
+
+   for i=1:8;
+    k=TC(i);
+    i=2*k-1;
+   dZ(i,1)=-x(k)*r33-f*r13;
+   dZ(i+1,1)=-y(k)*r33-f*r23;
+   end;
+
+   for i=1:8;
+    m=TC(i);
+    i=2*m-1;
+%   FX1=(x(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000);
+  FX1=(x(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000);
+  FX2=f*(-(sin(om)*sin(K))+cos(om)*sin(phi)*cos(K)*(Y(m)-Yo)+((cos(om)*sin(K)+sin(om)*sin(phi)*cos(K))*(Z(m)-Zo)));
+  dom(i,1)=FX1+FX2;
+  FY1=(y(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000);
+%   D(i,1)=(x(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000)+(f*(-(sin(om)*sin(K))+cos(om)*sin(phi)*cos(K)*(Y(m)-Yo)+((cos(om)*sin(K)+sin(om)*sin(phi)*cos(K))*(Z(m)-Zo))))
+%   D(i+1,1)=(x(m)*((-(cos(om)*cos(phi)*(Y(m)-Yo)))-(sin(om)*cos(phi)*(Z(m)-Zo)))/1000)+(f*(-(sin(om)*sin(K))+cos(om)*sin(phi)*cos(K)*(Y(m)-Yo)+((cos(om)*sin(K)+sin(om)*sin(phi)*cos(K))*(Z(m)-Zo))))
+  FY2=f*((-sin(om)*cos(K))-cos(om)*sin(phi)*sin(K))*(Y(m)-Yo)+(cos(om)*cos(K) -sin(om)*sin(phi)*sin(K)*(Z(m)-Zo));
+ dom(i+1,1)=FY1+FY2;
+
+   end
+   for i=1:8;
+    n=TC(i);
+    i=2*n-1;
+    FXP1=(x(n)*((cos(phi)*(X(n)-Xo))+sin(om)*sin(phi)*(Y(n)-Yo)-cos(om)*sin(phi)*(Z(n)-Zo)))/1000;
+    FXP2=f*(-sin(phi)*cos(K)*(X(n)-Xo)+sin(om)*cos(phi)*cos(K)*(Y(n)-Yo)-cos(om)*cos(phi)*cos(K)*(Z(n)-Zo));
+    dphi(i,1)=FXP1+FXP2;
+    FYP1=(y(n)*((cos(phi)*(X(n)-Xo))+sin(om)*sin(phi)*(Y(n)-Yo)-cos(om)*sin(phi)*(Z(n)-Zo)))/1000;
+    FYP2=f*((sin(phi)*sin(K)*(X(n)-Xo))-(sin(om)*cos(phi)*sin(K)*(Y(n)-Yo))+cos(om)*cos(phi)*sin(K)*(Z(n)-Zo));
+    dphi(i+1,1)=FYP1+FYP2;
+   end
+   for i=1:8;
+    p=TC(i);
+    i=2*p-1;
+   dkappa(i,1)=f*((-cos(phi)*sin(K)*(X(p)-Xo))+(cos(om)*cos(K)-sin(om)*sin(phi)*sin(K)*(Y(p)-Yo))+(sin(om)*cos(K)+cos(om)*sin(phi)*sin(K)*(Z(p)-Zo)));
+   dkappa(i+1,1)=-f*(((cos(phi)*cos(K))*(X(p)-Xo))+((cos(om)*sin(K)+sin(om)*sin(phi)*cos(K))*(Y(p)-Yo))+(sin(om)*sin(K)-cos(om)*sin(phi)*cos(K))*(Z(p)-Zo));
+  end
+
+A=[dX2 dY dZ dom dphi dkappa];
+
+   for i=1:8;
+    q=TC(i);
+    i=2*q-1;
+    Fo(i,1)=x(q)*((r31*(X(q)-Xo))+(r32*(Y(q)-Yo))+(r33*(Z(q)-Zo)))/1000+f*((r11*(X(q)-Xo))+(r12*(Y(q)-Yo))+(r13*(Z(q)-Zo)));
+    Fo(i+1,1)=y(q)*((r31*(X(q)-Xo))+(r32*(Y(q)-Yo))+(r33*(Z(q)-Zo)))/1000+f*((r21*(X(q)-Xo))+(r22*(Y(q)-Yo))+(r23*(Z(q)-Zo))) ; 
+   end
+
+
+% Initial=[Xo;Yo;Zo;om;phi;Ka];
+% Auniq=A(1:6,1:6);
+% Luniq=Fo(1:6,1);
+% 
+% N=Auniq'*Auniq;
+N=A'*A;
+Qxx=inv(N);
+d=A'*-Fo;
+delta=Qxx*d;
+
+ Xo=Xo+delta(1,1);
+ Yo=Yo+delta(2,1);
+ Zo=Zo+delta(3,1);
+ om=om+delta(4,1);
+ phi=phi+delta(5,1);
+ K=K+delta(6,1);
+ 
+N=A'*A;%Normal equation matrix
+Qxx=inv(N);%Coffactor matrix
+d=A'*-Fo2;%Absolute vactor
+xx=Qxx*d;%corrections to be effected
+%updating of initial values
+Xo=Xo+xx(1,1);
+Yo=Yo+xx(2,1);
+Zo=Zo+xx(3,1);
+om=om+xx(4,1);
+phi=phi+xx(5,1);
+K=K+xx(6,1);
+% Final solution by least squares
+
+Lsoln=[Xo;Yo;Zo;om;phi;K]
+
+
+
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>
